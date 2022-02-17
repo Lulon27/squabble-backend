@@ -1,0 +1,1254 @@
+swagger: "2.0"
+info:
+  description: "Squabble API"
+  version: "0.0.1"
+  title: "Squabble"
+#  termsOfService: ""
+#  contact:
+#    email: "test@mail.de"
+#  license:
+#    name: "Apache 2.0"
+#    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "squabble.com"
+basePath: "/"
+tags:
+- name: "accounts"
+  description: "Funktionen zum Umgang mit Accounts."
+- name: "friends"
+  description: "Alles zum Freundesystem."
+- name: "battles"
+  description: "Alles zum Kampfsystem."
+- name: "pets"
+  description: "Alles zu PokeTieren."
+- name: "items"
+  description: "Item- und Inventarfunktionen."
+- name: "shop"
+  description: "Der Itemshop für das PokeTier."
+schemes:
+- "http"
+paths:
+  /accounts:
+    post:
+      tags:
+      - "accounts"
+      summary: "Erstellt einen Account."
+#      description: ""
+#      operationId: "addAccount"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Account-Objekt, das erstellt werden soll."
+        required: true
+        schema:
+          $ref: "#/definitions/RegisterAccountData"
+      responses:
+        "201":
+          description: "Benutzer wurde erfolgreich erstellt."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+        "409":
+          description: "Email oder Benutzername ist vergeben."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        "422":
+          description: "Falsche Eingabedaten. Z. B. unzulässiger Benutzername, Passwort oder Tierart."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+#      security:
+#      - petstore_auth:
+#        - "write:pets"
+#        - "read:pets"
+  /accounts/{accountName}:
+    get:
+      tags:
+      - "accounts"
+      summary: "Gibt Informationen zu einem Account zurück."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "accountName"
+        in: "path"
+        description: "Benutzername des Accounts, von dem Informationen zurückgegeben werden sollen."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Accountinformationen wurden erfolgreich zurückgegeben."
+          schema:
+            type: "object"
+            properties:
+              code:
+                type: "string"
+                example: "SUCCESS"
+              devMsg:
+                type: "string"
+                example: ""
+              content:
+                $ref: "#/definitions/AccountInfo"
+        "404":
+          description: "Account wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+    patch:
+      tags:
+      - "accounts"
+      summary: "Aktualisiert einen vorhandenen Account."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "accountName"
+        in: "path"
+        description: "Benutzername des Accounts, der aktualisiert werden soll. Attribute, die nicht aktualisiert werden sollen, werden weggelassen."
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Account-Objekt mit Attributen, die aktualisiert werden sollen."
+        required: true
+        schema:
+          $ref: "#/definitions/UpdateAccountData"
+      responses:
+        "200":
+          description: "Benutzer wurde erfolgreich aktualisiert."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+        "404":
+          description: "Account wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        "409":
+          description: "Email oder Benutzername ist vergeben."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        "422":
+          description: "Falsche Eingabedaten. Z. B. unzulässiger Benutzername, Passwort oder Tierart."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+    delete:
+      tags:
+      - "accounts"
+      summary: "Löscht einen vorhandenen Account."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "accountName"
+        in: "path"
+        description: "Benutzername des Accounts, der gelöscht werden soll."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Benutzer wurde erfolgreich gelöscht."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+        "404":
+          description: "Account wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /accounts/{accountName}/friends:
+    get:
+      tags:
+      - "friends"
+      summary: "Gibt alle Freunde des Benutzers zurück."
+      description: "Freunde werden mit Name, Profilbild, Tiername, Tierart und Tierlevel zurückgegeben."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "accountName"
+        in: "path"
+        description: "Benutzername des Accounts, von dem die Freundesliste zurückgegeben werden soll."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Freundesliste wurde erfolgreich zurückgegeben."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+        "404":
+          description: "Account wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /accounts/{accountName}/friends/{friendName}:
+    delete:
+      tags:
+      - "friends"
+      summary: "Löscht den angegebenen Freund des Benutzers."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "accountName"
+        in: "path"
+        description: "Benutzername des Accounts, von dem ein Freund gelöscht werden soll."
+        required: true
+        type: "string"
+      - name: "friendName"
+        in: "path"
+        description: "Name des Accounts, der aus der Freundesliste gelöscht werden soll."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Der Freund wurde erfolgreich gelöscht."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+        "404":
+          description: "Account wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        "409":
+          description: "Der Account ist nicht mit dem angegebenen Freund befreundet."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /accounts/{accountName}/friendrequests/create:
+    post:
+      tags:
+      - "friends"
+      summary: "Sendet dem angegebenen Benutzer eine Freundschaftsanfrage."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "accountName"
+        in: "path"
+        description: "Name des Accounts, der eine Freundschaftsanfrage versenden soll."
+        required: true
+        type: "string"
+      - name: "friendName"
+        in: "query"
+        description: "Name des Accounts, der eine Freundschaftsanfrage erhalten soll."
+        required: true
+        type: "string"
+      responses:
+        "201":
+          description: "Die Freundschaftsanfrage wurde erfolgreich versendet."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+        "404":
+          description: "Eines der beiden Accounts wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        "409":
+          description: "Der Account ist schon mit dem angegebenen Freund befreundet oder es wurde schon eine Freundschaftsanfrage versendet oder es wurde eine Freundschaftsanfrage an sich selbst versendet."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /accounts/{accountName}/friendrequests/accept:
+    post:
+      tags:
+      - "friends"
+      summary: "Akzeptiert die Freundschaftsanfrage des angegebenen Benutzers."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "accountName"
+        in: "path"
+        description: "Name des Accounts, der eine Freundschaftsanfrage akzeptieren soll."
+        required: true
+        type: "string"
+      - name: "friendName"
+        in: "query"
+        description: "Name des Accounts, von dem die Freundschaftsanfrage akzeptiert werden soll."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Die Freundschaftsanfrage wurde erfolgreich akzeptiert."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+        "404":
+          description: "Eines der beiden Accounts wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        "409":
+          description: "Es gibt keine passende Freundschaftsanfrage."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /accounts/{accountName}/friendrequests/decline:
+    post:
+      tags:
+      - "friends"
+      summary: "Lehnt die Freundschaftsanfrage des angegebenen Benutzers ab."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "accountName"
+        in: "path"
+        description: "Name des Accounts, der eine Freundschaftsanfrage ablehnen soll."
+        required: true
+        type: "string"
+      - name: "friendName"
+        in: "query"
+        description: "Name des Accounts, von dem die Freundschaftsanfrage abgelehnt werden soll."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Die Freundschaftsanfrage wurde erfolgreich abgelehnt."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+        "404":
+          description: "Eines der beiden Accounts wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        "409":
+          description: "Es gibt keine passende Freundschaftsanfrage."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /accounts/{accountName}/battles:
+    get:
+      tags:
+      - "battles"
+      summary: "Gibt eine Liste mit kurzen Informationen der aktuellen Kämpfe des angegebenen Benutzers zurück."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "accountName"
+        in: "path"
+        description: "Name des Accounts, von dem Kampfinformationen zurückgegeben werden sollen."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Kampfinformationen wurden erfolgreich zusammengestellt."
+          schema:
+            type: "object"
+            properties:
+              code:
+                type: "string"
+                example: "SUCCESS"
+              devMsg:
+                type: "string"
+                example: ""
+              content:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    battleId:
+                      type: "integer"
+                    opponentAccName:
+                      type: "string"
+                    opponentPetName:
+                      type: "string"
+                    opponentPetLvl:
+                      type: "integer"
+                    opponentProfilePicId:
+                      type: "integer"
+                    opponentPetHealthPercentage:
+                      type: "number"
+                    ownPetHealthPercentage:
+                      type: "number"
+                    yourTurn:
+                      type: "boolean"
+                example: 
+                  -
+                      battleId: 224
+                      opponentAccName: "EpicRobloxMaster"
+                      opponentPetName: "Sparky 2.0"
+                      opponentPetLvl: 52
+                      opponentProfilePicId: 3
+                      opponentPetHealthPercentage: 0.78
+                      ownPetHealthPercentage: 0.56
+                      yourTurn: true
+                  -
+                      battleId: 225
+                      opponentAccName: "xXrobloxleonHDXx"
+                      opponentPetName: "birb"
+                      opponentPetLvl: 70
+                      opponentProfilePicId: 5
+                      opponentPetHealthPercentage: 0.4
+                      ownPetHealthPercentage: 0.84
+                      yourTurn: false
+        "404":
+          description: "Account wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /accounts/{accountName}/inventory:
+    get:
+      tags:
+      - "items"
+      summary: "Gibt eine Liste mit kurzen Informationen der Items im Inventar des angegebenen Benutzers zurück."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "accountName"
+        in: "path"
+        description: "Name des Accounts, von dem Iteminformationen zurückgegeben werden sollen."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Iteminformationen wurden erfolgreich zusammengestellt."
+          schema:
+            type: "object"
+            properties:
+              code:
+                type: "string"
+                example: "SUCCESS"
+              devMsg:
+                type: "string"
+                example: ""
+              content:
+                type: "array"
+                items:
+                  $ref: "#/definitions/ItemProperties"
+                example:
+                  - itemId: 2
+                    itemName: "Wollknäuel"
+                    itemIcon: "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAEMuMjoyKkM6NjpLR0NPZKZsZFxcZMySmnmm8dT++u3U6eX//////////+Xp////////////////////////////2wBDAUdLS2RXZMRsbMT//+n/////////////////////////////////////////////////////////////////////wAARCABAAEADASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAgMEAQUA/8QAJhAAAgEDBAEEAwEAAAAAAAAAAAECAxEhEjFBUQQiYXGBEzKR0f/EABcBAQEBAQAAAAAAAAAAAAAAAAABAgP/xAAZEQEBAQEBAQAAAAAAAAAAAAAAAQIRMRL/2gAMAwEAAhEDEQA/ALzJSUVeTsjSDyqznNxT9KCydNn5d3aC+xX56j3k/oQng1OzXTDpJFCqz3U2x1OvfE8e5KnYYgtkq08Iozs9L24Hhys4GrLTSlLpHKeTo+W7UH7nO5DWfGcpBrKs19A43tk3N1JMjRiyk90GsW6Bjj4YW3wVoxdlNN3gmSrCyUUH6WgxrxnlR1UJW4yc1bnWbVsnMqw0VGuEwmQIJJPDxcxK7Cs2s7hscVjSzc2Vwb3V+tw8/wBCiWY2KPH/AEb7ZNG7WNyynHRBIMb8LlIRWip55RRKmKlSkHNIlZ2Dg74YyVGT4PKhLlB0moBK0u0ws6UllmulpzJj4U0l/gX6gKSVPM07jlWg+WvlHtMVsjG0042uwxb1/9k="
+                    itemAmount: 3
+                  - itemId: 3
+                    itemName: "Etwas"
+                    itemIcon: null
+                    itemAmount: 2
+        "404":
+          description: "Account wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /accounts/{accountName}/inventory/{itemId}/use:
+    post:
+      tags:
+      - "items"
+      summary: "Benutzt das angegebene Item im Inventar eines Benutzers."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "accountName"
+        in: "path"
+        description: "Name des Accounts, der ein Item benutzen soll."
+        required: true
+        type: "string"
+      - name: "itemId"
+        in: "path"
+        description: "ID von dem Item, das benutzt werden soll."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Iteminformationen wurden erfolgreich zusammengestellt."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+        "404":
+          description: "Account wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        "409":
+          description: "Account hat das angegebene Item nicht im Inventar oder kann es momentan nicht benutzen."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /accounts/{accountName}/inbox:
+    get:
+      tags:
+      - "accounts"
+      summary: "Gibt alle ungelöschten Systemnachrichten zurück, die der Account erhalten hat."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "accountName"
+        in: "path"
+        description: "Name des Accounts, von dem Systemnachrichten zurückgegeben werden sollen."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Systemnachrichten wurden erfolgreich zusammengestellt."
+          schema:
+            type: "object"
+            properties:
+              code:
+                type: "string"
+                example: "SUCCESS"
+              devMsg:
+                type: "string"
+                example: ""
+              content:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    msgId:
+                      type: "integer"
+                    timestamp:
+                      type: "string"
+                    author:
+                      type: "string"
+                    content:
+                      type: "string"
+                example: 
+                  -
+                      msgId: 52
+                      timestamp: "YYYY-MM-DD hh:mm:ss"
+                      author: "System"
+                      content: "Du hast einen Kamp gegen XX gewonnen und 100 Münzen verdient. ZZ hat 530 Erfahrungspunkte erhalten."
+                  -
+                      msgId: 53
+                      timestamp: "YYYY-MM-DD hh:mm:ss"
+                      author: "System"
+                      content: "Du hast 100 Münzen bekommen, weil du dich heute zum ersten Mal eingeloggt hast!"
+        "404":
+          description: "Account wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /accounts/{accountName}/inbox/{msgId}:
+    delete:
+      tags:
+      - "accounts"
+      summary: "Löscht die angegebene Nachricht. Somit wird sie nicht weiter angezeigt."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "accountName"
+        in: "path"
+        description: "Name des Accounts, von dem Systemnachrichten gelöscht werden sollen."
+        required: true
+        type: "string"
+      - name: "msgId"
+        in: "path"
+        description: "ID der Systemnachricht, die gelöscht werden soll. \"all\" löscht alle Nachrichten."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Systemnachrichten wurden erfolgreich gelöscht."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+        "404":
+          description: "Account wurde nicht gefunden oder Systemnachricht wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /accsearch:
+    get:
+      tags:
+      - "accounts"
+      summary: "Suche zum Finden von Accounts."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Suchfilter für Accountnamen."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Es wurde ein Array mit keinen oder mehr Accounts zusammengestellt."
+          schema:
+            type: "object"
+            properties:
+              code:
+                type: "string"
+                example: "SUCCESS"
+              devMsg:
+                type: "string"
+                example: ""
+              content:
+                type: "array"
+                items:
+                  $ref: "#/definitions/AccountInfoShort"
+                example:
+                  -
+                      username: "EpicRobloxMaster"
+                      petName: "Sparky 2.0"
+                      petKind: "KANGAROO"
+                      petLvl: 69
+                  -
+                      username: "xXrobloxleonHDXx"
+                      petName: "birb"
+                      petKind: "BIRD"
+                      petLvl: 57
+  /battles/{battleId}:
+    get:
+      tags:
+      - "battles"
+      summary: "Gibt detaillierte Informationen des angegebenen Kampfes eines Benutzers zurück."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "battleId"
+        in: "path"
+        description: "Kampf-ID."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Kampfinformationen wurden erfolgreich zusammengestellt."
+          schema:
+            type: "object"
+            properties:
+              code:
+                type: "string"
+                example: "SUCCESS"
+              devMsg:
+                type: "string"
+                example: ""
+              content:
+                type: "object"
+                properties:
+                  opponentAccName:
+                    type: "string"
+                  opponentProfilePicId:
+                    type: "integer"
+                  yourTurn:
+                    type: "boolean"
+                  opponentPet:
+                    $ref: "#/definitions/PokePet"
+                  ownPet:
+                    $ref: "#/definitions/PokePet"
+                  ownAttacks:
+                    $ref: "#/definitions/AttacksView"
+                  lastTurn:
+                    type: "object"
+                    properties:
+                      opponentMsg:
+                        type: "string"
+                        example: "Sparky 2.0 hat Kratzer eingesetzt. birb hat 10 Schaden erlitten."
+                      ownMsg:
+                        type: "string"
+                        example: "birb hat Piekser eingesetzt. Sparky 2.0 hat 9 Schaden erlitten."
+        "404":
+          description: "Kampf mit der angegebenen ID wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /battles/{battleId}/turn:
+    post:
+      tags:
+      - "battles"
+      summary: "Lässt den eingeloggten Benutzer einen Zug machen."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "battleId"
+        in: "path"
+        description: "Kampf-ID."
+        required: true
+        type: "string"
+      - name: "type"
+        in: "query"
+        description: "Typ der Aktion."
+        required: true
+        type: "string"
+        enum:
+        - "move"
+        - "item"
+        - "surrender"
+      - name: "id"
+        in: "query"
+        description: "ID der Aktion. Z. B. Angriffs-ID im Falle einer Attacke und Item-ID im Falle eines Items."
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "Aktion wurde erfolgreich durchgeführt."
+          schema:
+            type: "object"
+            properties:
+              code:
+                type: "string"
+                example: "SUCCESS"
+              devMsg:
+                type: "string"
+                example: ""
+              content:
+                type: "object"
+                properties:
+                  resultMsg:
+                    type: "string"
+                    example: "birb hat Piekser eingesetzt. Sparky 2.0 hat 10 Schaden erlitten."
+                    description: "Diese Nachricht beschreibt, was im Kampf in dieser Runde passiert ist."
+        "404":
+          description: "Kampf mit der angegebenen ID wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        "409":
+          description: "Ungültige Eingabewerte, z. B. PokeTier kann diese Attacke nicht oder hat dieses Item nicht oder kann eine Attacke nicht mehr einsetzen."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /pets/{petId}:
+    get:
+      tags:
+      - "pets"
+      summary: "Gibt Informationen zu einem PokeTier zurück."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "petId"
+        in: "path"
+        description: "ID des PokeTier, dessen Informationen zurückgegeben werden sollen."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Informationen wurden erfolgreich zurückgegeben."
+          schema:
+            type: "object"
+            properties:
+              code:
+                type: "string"
+                example: "SUCCESS"
+              devMsg:
+                type: "string"
+                example: ""
+              content:
+                type: "object"
+                properties:
+                  pet:
+                    $ref: "#/definitions/PokePet"
+                  moveSet:
+                    type: "array"
+                    items:
+                      type: "integer"
+                    example: [1, 2, 3]
+                    description: "Ausgewählte Attacken-IDs."
+                  learnableMoves:
+                    type: "array"
+                    items:
+                      type: "integer"
+                    example: [0, 1, 2, 3, 4, 5, 6, 7]
+                    description: "Ausgewählte Attacken-IDs."
+        "404":
+          description: "PokeTier mit der angegebenen ID wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+    patch:
+      tags:
+      - "pets"
+      summary: "Aktualisiert Informationen eines PokeTier."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "petId"
+        in: "path"
+        description: "ID des PokeTier, dessen Informationen aktualisiert werden sollen."
+        required: true
+        type: "string"
+      - name: "body"
+        in: "body"
+        description: "Die Attribute des PokeTier, die aktualisiert werden sollen. Attribute, die nicht aktualisiert werden sollen, werden weggelassen."
+        required: true
+        schema:
+          $ref: "#/definitions/UpdatePetData"
+      responses:
+        "200":
+          description: "Informationen wurden erfolgreich aktualisiert."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+        "404":
+          description: "PokeTier mit der angegebenen ID wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        "422":
+          description: "Falsche Eingabedaten. Z. B. unzulässiger Name, unzulässige Verteilung von Statuspunkten oder unzulässige Auswahl von Attacken."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /items/{itemId}:
+    get:
+      tags:
+      - "items"
+      summary: "Gibt detaillierte Informationen zu einem Item zurück."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "itemId"
+        in: "path"
+        description: "Item-ID."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Iteminformationen wurden erfolgreich zusammengestellt."
+          schema:
+            type: "object"
+            properties:
+              code:
+                type: "string"
+                example: "SUCCESS"
+              devMsg:
+                type: "string"
+                example: ""
+              content:
+                type: "object"
+                properties:
+                  itemId:
+                    type: "integer"
+                    description: "Item-ID."
+                  itemName:
+                    type: "string"
+                    description: "Name des Items."
+                  itemIcon:
+                    type: "string"
+                    description: "Icon des Items codiert in Base64."
+                  itemAmount:
+                    type: "integer"
+                    description: "Anzahl von diesem Item."
+                  hilfe:
+                    type: "string"
+                example:
+                  - itemId: 2
+                    itemName: "Wollknäuel"
+                    itemIcon: "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAEMuMjoyKkM6NjpLR0NPZKZsZFxcZMySmnmm8dT++u3U6eX//////////+Xp////////////////////////////2wBDAUdLS2RXZMRsbMT//+n/////////////////////////////////////////////////////////////////////wAARCABAAEADASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAgMEAQUA/8QAJhAAAgEDBAEEAwEAAAAAAAAAAAECAxEhEjFBUQQiYXGBEzKR0f/EABcBAQEBAQAAAAAAAAAAAAAAAAABAgP/xAAZEQEBAQEBAQAAAAAAAAAAAAAAAQIRMRL/2gAMAwEAAhEDEQA/ALzJSUVeTsjSDyqznNxT9KCydNn5d3aC+xX56j3k/oQng1OzXTDpJFCqz3U2x1OvfE8e5KnYYgtkq08Iozs9L24Hhys4GrLTSlLpHKeTo+W7UH7nO5DWfGcpBrKs19A43tk3N1JMjRiyk90GsW6Bjj4YW3wVoxdlNN3gmSrCyUUH6WgxrxnlR1UJW4yc1bnWbVsnMqw0VGuEwmQIJJPDxcxK7Cs2s7hscVjSzc2Vwb3V+tw8/wBCiWY2KPH/AEb7ZNG7WNyynHRBIMb8LlIRWip55RRKmKlSkHNIlZ2Dg74YyVGT4PKhLlB0moBK0u0ws6UllmulpzJj4U0l/gX6gKSVPM07jlWg+WvlHtMVsjG0042uwxb1/9k="
+                    itemAmount: 3
+                    hilfe: "Was machen Items denn jetzt?"
+        "404":
+          description: "Item mit der angegebenen ID wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /moves/{moveId}:
+    get:
+      tags:
+      - "battles"
+      summary: "Gibt detaillierte Informationen zu einer Attacke zurück."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "moveId"
+        in: "path"
+        description: "Attacken-ID."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Attackeninformationen wurden erfolgreich zusammengestellt."
+          schema:
+            type: "object"
+            properties:
+              code:
+                type: "string"
+                example: "SUCCESS"
+              devMsg:
+                type: "string"
+                example: ""
+              content:
+                type: "object"
+                properties:
+                  attackName:
+                    type: "string"
+                    example: "Mauzer"
+                  description:
+                    type: "string"
+                    example: "Mauzer stärkt den eigenen Angriff und senkt die gegnerische Verteidigung. (Beispiel)"
+                  powerRating:
+                    type: "integer"
+                    example: 2
+                  isStatusMove:
+                    type: "boolean"
+                    example: true
+                  damage:
+                    type: "integer"
+                    example: 0
+                  affectedStatOpponent:
+                    type: "string"
+                    enum:
+                    - "health"
+                    - "attack"
+                    - "defense"
+                    - "dexterity"
+                    example: "defense"
+                  affectedStatSelf:
+                    type: "string"
+                    enum:
+                    - "health"
+                    - "attack"
+                    - "defense"
+                    - "dexterity"
+                    example: "attack"
+                  statModOpponent:
+                    type: "integer"
+                    example: -1
+                  statModSelf:
+                    type: "integer"
+                    example: 1
+        "404":
+          description: "Attacke mit der angegebenen ID wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /shop/items:
+    get:
+      tags:
+      - "shop"
+      summary: "Gibt alle Angebote im Shop zurück."
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Angebote im Shop wurden erfolgreich zusammengestellt."
+          schema:
+            type: "object"
+            properties:
+              code:
+                type: "string"
+                example: "SUCCESS"
+              devMsg:
+                type: "string"
+                example: ""
+              content:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    item:
+                      $ref: "#/definitions/ItemProperties"
+                    price:
+                      type: "integer"
+                      example: 100
+  /shop/items/{itemId}/buy:
+    post:
+      tags:
+      - "shop"
+      summary: "Lässt den eingeloggten User das angegebene Item im Shop kaufen."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "itemId"
+        in: "path"
+        description: "Item-ID des zu kaufenden Items."
+        required: true
+        type: "string"
+      - name: "amount"
+        in: "query"
+        description: "Anzahl der zu kaufenden Items. Wird der Parameter weggelassen, wird nur ein Item gekauft."
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "Das angegebene Item wurde erfolgreich gekauft."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+        "404":
+          description: "Das angegebene Item ist im Shop nicht verfügbar."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        "409":
+          description: "Das angegebene Item kann nicht gekauft werden, weil z. B. der Account nicht genug Münzen hat."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /accounts/login:
+    post:
+      tags:
+      - "accounts"
+      summary: "Loggt einen Account ein."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "query"
+        description: "Der Benutzername."
+        required: true
+        type: "string"
+      - name: "password"
+        in: "query"
+        description: "Das Passwort."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Der Benutzer wurde erfolgreich eingeloggt."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+#          headers:
+#            X-Rate-Limit:
+#              type: "integer"
+#              format: "int32"
+#              description: "calls per hour allowed by the user"
+#            X-Expires-After:
+#              type: "string"
+#              format: "date-time"
+#              description: "date in UTC when token expires"
+        "409":
+          description: "Falsche Email oder falsches Passwort."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /accounts/logout:
+    post:
+      tags:
+      - "accounts"
+      summary: "Loggt den eingeloggten Benutzer aus."
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Benutzer wurde erfolgreich ausgeloggt."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+#securityDefinitions:
+#  petstore_auth:
+#    type: "oauth2"
+#    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
+#    flow: "implicit"
+#    scopes:
+#      write:pets: "modify pets in your account"
+#      read:pets: "read your pets"
+#  api_key:
+#    type: "apiKey"
+#    name: "api_key"
+#    in: "header"
+definitions:
+  AccountInfo:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+        example: "my_epic_mail@gmail.com"
+        description: "Registrierungs-Email"
+      username:
+        type: "string"
+        example: "EpicRobloxMaster"
+        description: "Einzigartiger Name"
+      pictureId:
+        type: "integer"
+        description: "ID des ausgewählten Profilicons"
+      petId:
+        type: "integer"
+        description: "ID des PokePet"
+  RegisterAccountData:
+    type: "object"
+    required:
+    - "email"
+    - "username"
+    - "password"
+    - "petName"
+    - "petBreed"
+    properties:
+      email:
+        type: "string"
+        example: "my_epic_mail@gmail.com"
+        description: "Registrierungs-Email"
+      username:
+        type: "string"
+        example: "EpicRobloxMaster"
+        description: "Einzigartiger Name"
+      password:
+        type: "string"
+        example: "password123"
+        description: "Klartext Passwort"
+      pictureId:
+        type: "integer"
+        description: "ID des ausgewählten Profilicons"
+      petName:
+        type: "string"
+        example: "Sparky"
+        description: "Name des PokeTier"
+      petKind:
+        type: "string"
+        example: "KANGAROO"
+        description: "Art des Poketier"
+      petImage:
+        type: "string"
+        example: "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAA0AEYDASIAAhEBAxEB/8QAGgAAAgMBAQAAAAAAAAAAAAAAAAQDBQYBAv/EAC0QAAEDAwMCBQMFAQAAAAAAAAEAAgMEESEFEjETQQYUIlFhMnGRI4GhscHR/8QAFwEAAwEAAAAAAAAAAAAAAAAAAAECA//EABkRAQEBAQEBAAAAAAAAAAAAAAABETECEv/aAAwDAQACEQMRAD8AT12TdVW9gqcp/VX76uT4wkVHrrSPBQulccCGhxBseDbBSNzcrOfSyzTDIbiYDcc/wodFgE+oxl7SY4zud7fCv3vNS50TGE7j3wLI4XWJIQrqr8O1cDdzbPb7DlcodFL5L1ILWt5bwSr2I+apgCeEJvUKXylSY+WHLfshMGKyTfUSO93FQXTQoJZHXc4NB7lejpp4a+5+As9jTKNLphU1DeoAY72ye60DqJsMXQeyN9M44BGAldHpDSxSNqItwc7FwraH1EMiLy3u1+R+VN628ZI8aVQ08NM8BtmAnnuPlIV2+nmM8FQGxBvqYWbvwndSqxTERbrF3+JTfEaZwPqLhk8q5GFqSPxAZHCN9K120BxAdY2TM80NZFup2kOHIIsR8EKgZGGSnptsTguAz8K/8O0klJSydc36hG25+/8A1OxMrJa/v88N7C1oaA2/dCtfFksBmjhDbyNySOwQnCqelpuu67+FbQU0UQAA572XiKBrOLj90w1pHOVEmLvrRIQ1nO0fZRMd+phyY+rGFxkZvnITpSqXW6Gaoe2dgJDebdlDTUfVp2mMESD6hdaFzbNe12WPGfhVNVSCkjkm8x02NFxblEBKaJ9C9skwsx3seMo1LXNsTYKR/rH1PA4VDVVktS473OIv3N1E1Um1MXl5LnG7jkk90LgtblCZN3fBK9E4BQhSpLGAeylshCQRycFZ7xC4iheL4uP7QhEFZReghCtKRCEID//Z"
+        description: "Optionales, in Base64 codiertes, Bild des PokeTier. Max. ca. 4 KB."
+  UpdateAccountData:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+        example: "my_new_mail@gmail.com"
+        description: "Registrierungs-Email"
+      username:
+        type: "string"
+        example: "MyBetterName"
+        description: "Einzigartiger Name"
+      password:
+        type: "string"
+        example: "myBetterPassword123"
+        description: "Klartext Passwort"
+      pictureId:
+        type: "integer"
+        description: "ID des ausgewählten Profilicons"
+      petName:
+        type: "string"
+        example: "Sparky 2.0"
+        description: "Name des PokeTier"
+      petKind:
+        type: "string"
+        example: "KANGAROO"
+        description: "Art des Poketier"
+      petImage:
+        type: "string"
+        example: null
+        description: "Optionales, in Base64 codiertes, Bild des PokeTier. Max. ca. 4 KB. \"null\" löscht das Bild."
+  UpdatePetData:
+    type: "object"
+    properties:
+      petName:
+        type: "string"
+        example: "Sparky 2.0"
+        description: "Aktualisierter Name des PokeTier"
+      petKind:
+        type: "string"
+        example: "KANGAROO"
+        description: "Aktualisierte Art des Poketier"
+      petImage:
+        type: "string"
+        example: null
+        description: "Optionales, in Base64 codiertes, Bild des PokeTier. Max. ca. 4 KB. \"null\" löscht das Bild."
+      moveSet:
+        type: "array"
+        items:
+          type: "string"
+        example: [1, 2, 3]
+        description: "Ausgewählte Attacken-IDs."
+      statPointsExtra:
+        type: "object"
+        properties:
+          attack:
+            type: "integer"
+            example: 5
+          defense:
+            type: "integer"
+            example: 4
+          health:
+            type: "integer"
+            example: 2
+          dexterity:
+            type: "integer"
+            example: 9
+        description: "Vergebene Statuspunkte."
+  ApiErrorResponse:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "ERR_ACC_NOT_FOUND"
+        description: "Ein Fehlercode, der bei der Programmierung des Clients helfen kann."
+      devMsg:
+        type: "string"
+        example: "Account 'EpicRobloxMaster' wurde nicht gefunden."
+        description: "Eine Nachricht, die Entwicklern helfen soll, den Fehler besser zu verstehen, aber nicht weiterverarbeitet werden soll."
+      content:
+        type: "object"
+        example: null
+        description: "Dieser Wert beinhaltet normalerweise die Daten der Antwort des Servers. Im Falle eines Fehlers ist dieser üblicherweise aus Kompatibilitätsgründen \"null\"."
+  ApiSuccessResponseSimple:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "SUCCESS"
+        description: "Ein Code, der zeigt, dass die Anfrage erfolgreich war. Dieser kann ignoriert werden, da man aus dem Statuscode schließen kann, dass es sich um einen Erfolg handelt."
+      devMsg:
+        type: "string"
+        example: ""
+        description: "Eine Nachricht, die Entwicklern zusätzliche Informationen geben kann, aber nicht weiterverarbeitet werden soll. Erfolgreiche Anfragen haben meistens keine Nachricht."
+      content:
+        type: "object"
+        example: null
+        description: "Dieser Wert beinhaltet die Daten der Antwort des Servers. Im Falle eines Fehlers ist dieser üblicherweise aus Kompatibilitätsgründen \"null\". Es kommt auf die Anfrage an, auf was dieser Wert gesetzt wird."
+  AccountInfoShort:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+        example: "EpicRoblexMaster"
+      petName:
+        type: "string"
+        example: "Sparky 2.0"
+      petKind:
+        type: "string"
+        example: "KANGAROO"
+      petLvl:
+        type: "integer"
+        example: 32
+  PokePet:
+    type: "object"
+    properties:
+      petName:
+        type: "string"
+        example: "Sparky 2.0"
+      petKind:
+        type: "string"
+        example: "KANGAROO"
+      petLvl:
+        type: "integer"
+        example: 32
+      petImage:
+        type: "string"
+        example: "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAA0AEYDASIAAhEBAxEB/8QAGgAAAgMBAQAAAAAAAAAAAAAAAAQDBQYBAv/EAC0QAAEDAwMCBQMFAQAAAAAAAAEAAgMEESEFEjETQQYUIlFhMnGRI4GhscHR/8QAFwEAAwEAAAAAAAAAAAAAAAAAAAECA//EABkRAQEBAQEBAAAAAAAAAAAAAAABETECEv/aAAwDAQACEQMRAD8AT12TdVW9gqcp/VX76uT4wkVHrrSPBQulccCGhxBseDbBSNzcrOfSyzTDIbiYDcc/wodFgE+oxl7SY4zud7fCv3vNS50TGE7j3wLI4XWJIQrqr8O1cDdzbPb7DlcodFL5L1ILWt5bwSr2I+apgCeEJvUKXylSY+WHLfshMGKyTfUSO93FQXTQoJZHXc4NB7lejpp4a+5+As9jTKNLphU1DeoAY72ye60DqJsMXQeyN9M44BGAldHpDSxSNqItwc7FwraH1EMiLy3u1+R+VN628ZI8aVQ08NM8BtmAnnuPlIV2+nmM8FQGxBvqYWbvwndSqxTERbrF3+JTfEaZwPqLhk8q5GFqSPxAZHCN9K120BxAdY2TM80NZFup2kOHIIsR8EKgZGGSnptsTguAz8K/8O0klJSydc36hG25+/8A1OxMrJa/v88N7C1oaA2/dCtfFksBmjhDbyNySOwQnCqelpuu67+FbQU0UQAA572XiKBrOLj90w1pHOVEmLvrRIQ1nO0fZRMd+phyY+rGFxkZvnITpSqXW6Gaoe2dgJDebdlDTUfVp2mMESD6hdaFzbNe12WPGfhVNVSCkjkm8x02NFxblEBKaJ9C9skwsx3seMo1LXNsTYKR/rH1PA4VDVVktS473OIv3N1E1Um1MXl5LnG7jkk90LgtblCZN3fBK9E4BQhSpLGAeylshCQRycFZ7xC4iheL4uP7QhEFZReghCtKRCEID//Z"
+        description: "Optionales, in Base64 codiertes, Bild des PokeTier. Max. ca. 4 KB."
+      stats:
+        type: "object"
+        properties:
+          healthBase:
+            type: "integer"
+            example: 25
+          healthExtra:
+            type: "integer"
+            example: 5
+          healthCurrent:
+            type: "integer"
+            example: 30
+          attackBase:
+            type: "integer"
+            example: 20
+          attackExtra:
+            type: "integer"
+            example: 3
+          attackCurrent:
+            type: "integer"
+            example: 23
+          defenseBase:
+            type: "integer"
+            example: 27
+          defenseExtra:
+            type: "integer"
+            example: 3
+          defenseCurrent:
+            type: "integer"
+            example: 30
+          dexterityBase:
+            type: "integer"
+            example: 15
+          dexterityExtra:
+            type: "integer"
+            example: 3
+          dexterityCurrent:
+            type: "integer"
+            example: 18
+  AttacksView:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        attackId:
+          type: "integer"
+          example: 5
+        attackName:
+          type: "string"
+          example: "Mauzer"
+        performRemaining:
+          type: "integer"
+          example: 3
+        performMax:
+          type: "integer"
+          example: 5
+        powerRating:
+          type: "integer"
+          example: 1
+  ItemProperties:
+    type: "object"
+    properties:
+      itemId:
+        type: "integer"
+        description: "Item-ID."
+      itemName:
+        type: "string"
+        description: "Name des Items."
+      itemIcon:
+        type: "string"
+        description: "Icon des Items codiert in Base64."
+      itemAmount:
+        type: "integer"
+        description: "Anzahl von diesem Item."
+    example:
+      itemId: 2
+      itemName: "Wollknäuel"
+      itemIcon: "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAEMuMjoyKkM6NjpLR0NPZKZsZFxcZMySmnmm8dT++u3U6eX//////////+Xp////////////////////////////2wBDAUdLS2RXZMRsbMT//+n/////////////////////////////////////////////////////////////////////wAARCABAAEADASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAgMEAQUA/8QAJhAAAgEDBAEEAwEAAAAAAAAAAAECAxEhEjFBUQQiYXGBEzKR0f/EABcBAQEBAQAAAAAAAAAAAAAAAAABAgP/xAAZEQEBAQEBAQAAAAAAAAAAAAAAAQIRMRL/2gAMAwEAAhEDEQA/ALzJSUVeTsjSDyqznNxT9KCydNn5d3aC+xX56j3k/oQng1OzXTDpJFCqz3U2x1OvfE8e5KnYYgtkq08Iozs9L24Hhys4GrLTSlLpHKeTo+W7UH7nO5DWfGcpBrKs19A43tk3N1JMjRiyk90GsW6Bjj4YW3wVoxdlNN3gmSrCyUUH6WgxrxnlR1UJW4yc1bnWbVsnMqw0VGuEwmQIJJPDxcxK7Cs2s7hscVjSzc2Vwb3V+tw8/wBCiWY2KPH/AEb7ZNG7WNyynHRBIMb8LlIRWip55RRKmKlSkHNIlZ2Dg74YyVGT4PKhLlB0moBK0u0ws6UllmulpzJj4U0l/gX6gKSVPM07jlWg+WvlHtMVsjG0042uwxb1/9k="
+#externalDocs:
+#  description: "Find out more about Swagger"
+#  url: "http://swagger.io"
