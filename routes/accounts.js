@@ -59,7 +59,7 @@ function(err, req, res, next)
     return res.status(401).send(
     {
         code: "ERR_ACC_NOT_FOUND",
-        devMsg: `Account '${req.body.username}' wurde nicht gefunden oder das Passwort ist falsch.`,
+        devMsg: `Account '${req.query.username}' wurde nicht gefunden oder das Passwort ist falsch.`,
         content: null
     }
 )})
