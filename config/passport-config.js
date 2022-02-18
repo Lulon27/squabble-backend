@@ -1,5 +1,5 @@
 const LocalStrategy = require('passport-local');
-const bcrypt = require('bcrypt');
+const bcryptjs = require('bcryptjs');
 
 function configPassport(passport, getUserByEmail, getUserById)
 {
@@ -20,7 +20,7 @@ function configPassport(passport, getUserByEmail, getUserById)
 
         try
         {
-            if(await bcrypt.compare(password, user.password))
+            if(await bcryptjs.compare(password, user.password))
             {
                 return done(null, user)
             }

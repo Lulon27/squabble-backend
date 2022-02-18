@@ -3,7 +3,7 @@ const router = express.Router();
 
 const passport = require('passport');
 const auth = require('../config/passport-config').auth;
-const bcrypt = require('bcrypt');
+const bcryptjs = require('bcryptjs');
 const users = require('../users');
 
 function newUser(id, name, pass)
@@ -26,7 +26,7 @@ router.post('/', async (req, res) =>
         //Very simple user creation for example purposes
         //Will be replaced with appropriate user creation
         console.log(newUser);
-        var pass = await bcrypt.hash(req.body.password, 10);
+        var pass = await bcryptjs.hash(req.body.password, 10);
         const user = newUser(i, req.body.username, pass);
         i += 1;
         res.status(201).json({
