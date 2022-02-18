@@ -1,16 +1,17 @@
 
 const express = require('express');
 const router = express.Router();
-const auth = require('../config/passport-config').auth;
 
-router.get('/:petId', auth, async (req, res) =>
+const squabbleAuth = require('../response_util').squabbleAuth;
+
+router.get('/:petId', squabbleAuth, async (req, res) =>
 {
-    res.status(418).send("Not yet implemented");
+    res.sendSquabbleResponse(util.responses.not_implemented, '', null);
 })
 
-router.patch('/:petId', auth, async (req, res) =>
+router.patch('/:petId', squabbleAuth, async (req, res) =>
 {
-    res.status(418).send("Not yet implemented");
+    res.sendSquabbleResponse(util.responses.not_implemented, '', null);
 })
 
 module.exports = router;

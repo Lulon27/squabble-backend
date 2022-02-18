@@ -36,14 +36,6 @@ function configPassport(passport, getUserByEmail, getUserById)
     });
 }
 
-function auth(req, res, next)
-{
-    if(req.isAuthenticated())
-    {
-        return next();
-    }
-    res.sendStatus(401);
-}
+
 
 module.exports.configPassport = configPassport;
-module.exports.auth = auth;

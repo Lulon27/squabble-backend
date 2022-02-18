@@ -2,9 +2,12 @@ const express = require('express');
 const router = express.Router();
 
 const passport = require('passport');
-const auth = require('../config/passport-config').auth;
 const bcryptjs = require('bcryptjs');
 const users = require('../users');
+
+const util = require('../response_util');
+const squabble = util.squabble;
+const squabbleAuth = util.squabbleAuth;
 
 function newUser(id, name, pass)
 {
@@ -19,7 +22,7 @@ function newUser(id, name, pass)
 
 var i = 0;
 
-router.post('/', async (req, res) =>
+router.post('/', squabble, async (req, res) =>
 {
     try
     {
@@ -29,11 +32,7 @@ router.post('/', async (req, res) =>
         var pass = await bcryptjs.hash(req.body.password, 10);
         const user = newUser(i, req.body.username, pass);
         i += 1;
-        res.status(201).json({
-            "code": "SUCCESS",
-            "devMsg": "",
-            "content": null
-          });
+        res.sendSquabbleResponse(util.responses.created, '', null);
         console.log('Registered user: ');
         console.log(user);
     }
@@ -44,27 +43,17 @@ router.post('/', async (req, res) =>
     }
 })
 
-router.post('/login', passport.authenticate('local', { failWithError: true }),
+router.post('/login', squabble, passport.authenticate('local', { failWithError: true }),
 function(req, res, next)
 {
-    return res.send(
-    {
-        code: "SUCCESS",
-        devMsg: "",
-        content: null
-    }
-)},
+    return res.sendSquabbleResponse(util.responses.success, '', null);
+},
 function(err, req, res, next)
 {
-    return res.status(401).send(
-    {
-        code: "ERR_ACC_NOT_FOUND",
-        devMsg: `Account '${req.query.username}' wurde nicht gefunden oder das Passwort ist falsch.`,
-        content: null
-    }
-)})
+    return res.sendSquabbleResponse(util.responses.acc_not_found, `Account '${req.query.username}' wurde nicht gefunden oder das Passwort ist falsch.`, null);
+});
 
-router.delete('/logout', auth, async (req, res) =>
+router.delete('/logout', squabbleAuth, async (req, res) =>
 {
     if (req.session)
     {
@@ -72,21 +61,11 @@ router.delete('/logout', auth, async (req, res) =>
         {
             if (err)
             {
-                res.status(400).json(
-                {
-                    code: "ERR_LOGOUT_FAIL",
-                    devMsg: "Failed to log out for some reason",
-                    content: null
-                });
+                res.sendSquabbleResponse(util.responses.logout_fail, 'Failed to log out for some reason', null);
             }
             else
             {
-                res.status(200).json(
-                {
-                    code: "SUCCESS",
-                    devMsg: "",
-                    content: null
-                });
+                res.sendSquabbleResponse(util.responses.success, '', null);
             }
         });
     }
@@ -96,19 +75,19 @@ router.delete('/logout', auth, async (req, res) =>
     }
 });
 
-router.get('/:accountName', auth, async (req, res) =>
+router.get('/:accountName', squabbleAuth, async (req, res) =>
 {
-    res.status(418).send("Not yet implemented");
+    res.sendSquabbleResponse(util.responses.not_implemented, '', null);
 });
 
-router.patch('/:accountName', auth, async (req, res) =>
+router.patch('/:accountName', squabbleAuth, async (req, res) =>
 {
-    res.status(418).send("Not yet implemented");
+    res.sendSquabbleResponse(util.responses.not_implemented, '', null);
 });
 
-router.delete('/:accountName', auth, async (req, res) =>
+router.delete('/:accountName', squabbleAuth, async (req, res) =>
 {
-    res.status(418).send("Not yet implemented");
+    res.sendSquabbleResponse(util.responses.not_implemented, '', null);
 });
 
 module.exports = router;

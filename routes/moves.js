@@ -2,9 +2,11 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/:moveId', async (req, res) =>
+const squabble = require('../response_util').squabble;
+
+router.get('/:moveId', squabble, async (req, res) =>
 {
-    res.status(418).send("Not yet implemented");
+    res.sendSquabbleResponse(util.responses.not_implemented, '', null);
 })
 
 module.exports = router;

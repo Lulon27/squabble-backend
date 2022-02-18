@@ -1,16 +1,17 @@
 
 const express = require('express');
 const router = express.Router();
-const auth = require('../../config/passport-config').auth;
 
-router.get('/', auth, async (req, res) =>
+const squabbleAuth = require('../../response_util').squabbleAuth;
+
+router.get('/', squabbleAuth, async (req, res) =>
 {
-    res.status(418).send("Not yet implemented");
+    res.sendSquabbleResponse(util.responses.not_implemented, '', null);
 })
 
-router.delete('/:friendName', auth, async (req, res) =>
+router.delete('/:friendName', squabbleAuth, async (req, res) =>
 {
-    res.status(418).send("Not yet implemented");
+    res.sendSquabbleResponse(util.responses.not_implemented, '', null);
 })
 
 module.exports = router;
