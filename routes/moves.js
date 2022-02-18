@@ -2,7 +2,8 @@
 const express = require('express');
 const router = express.Router();
 
-const squabble = require('../response_util').squabble;
+const util = require('../response_util');
+const squabble = util.squabble;
 
 router.get('/:moveId', squabble, async (req, res) =>
 {

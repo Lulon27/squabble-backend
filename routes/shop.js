@@ -2,7 +2,8 @@
 const express = require('express');
 const router = express.Router();
 
-const squabbleAuth = require('../response_util').squabbleAuth;
+const util = require('../response_util');
+const squabbleAuth = util.squabbleAuth;
 
 router.get('/items', squabbleAuth, async (req, res) =>
 {
