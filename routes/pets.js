@@ -1,13 +1,14 @@
 
 const express = require('express');
-const router = express.Router()
+const router = express.Router();
+const auth = require('../config/passport-config').auth;
 
-router.get('/:petId', async (req, res) =>
+router.get('/:petId', auth, async (req, res) =>
 {
     res.status(418).send("Not yet implemented");
 })
 
-router.patch('/:petId', async (req, res) =>
+router.patch('/:petId', auth, async (req, res) =>
 {
     res.status(418).send("Not yet implemented");
 })

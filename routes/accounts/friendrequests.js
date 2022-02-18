@@ -1,18 +1,19 @@
 
 const express = require('express');
-const router = express.Router()
+const router = express.Router();
+const auth = require('../../config/passport-config').auth;
 
-router.post('/create', async (req, res) =>
+router.post('/create', auth, async (req, res) =>
 {
     res.status(418).send("Not yet implemented");
 })
 
-router.post('/accept', async (req, res) =>
+router.post('/accept', auth, async (req, res) =>
 {
     res.status(418).send("Not yet implemented");
 })
 
-router.post('/decline', async (req, res) =>
+router.post('/decline', auth, async (req, res) =>
 {
     res.status(418).send("Not yet implemented");
 })

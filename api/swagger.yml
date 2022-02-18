@@ -26,6 +26,14 @@ tags:
   description: "Der Itemshop für das PokeTier."
 schemes:
 - "http"
+components:
+  securitySchemes:
+    expressSessionAuth:
+      type: apiKey
+      in: cookie
+      name: session.sid
+security:
+  - expressSessionAuth: []
 paths:
   /accounts:
     post:
@@ -45,6 +53,7 @@ paths:
         required: true
         schema:
           $ref: "#/definitions/RegisterAccountData"
+      security: []
       responses:
         "201":
           description: "Benutzer wurde erfolgreich erstellt."
@@ -681,7 +690,7 @@ paths:
         in: "path"
         description: "ID des PokeTier, dessen Informationen zurückgegeben werden sollen."
         required: true
-        type: "string"
+        type: "integer"
       responses:
         "200":
           description: "Informationen wurden erfolgreich zurückgegeben."
@@ -728,7 +737,7 @@ paths:
         in: "path"
         description: "ID des PokeTier, dessen Informationen aktualisiert werden sollen."
         required: true
-        type: "string"
+        type: "integer"
       - name: "body"
         in: "body"
         description: "Die Attribute des PokeTier, die aktualisiert werden sollen. Attribute, die nicht aktualisiert werden sollen, werden weggelassen."
@@ -761,6 +770,7 @@ paths:
         description: "Item-ID."
         required: true
         type: "string"
+      security: []
       responses:
         "200":
           description: "Iteminformationen wurden erfolgreich zusammengestellt."
@@ -813,6 +823,7 @@ paths:
         description: "Attacken-ID."
         required: true
         type: "string"
+      security: []
       responses:
         "200":
           description: "Attackeninformationen wurden erfolgreich zusammengestellt."
@@ -947,9 +958,17 @@ paths:
         description: "Das Passwort."
         required: true
         type: "string"
+      security: []
       responses:
         "200":
-          description: "Der Benutzer wurde erfolgreich eingeloggt."
+          description: > 
+            Der Benutzer wurde erfolgreich eingeloggt.
+            Die Session-ID wird in einem Cookie namens "connect.sid" zurückgegeben. Dieser Cookie muss in allen weiteren Anfragen des Clients enthalten sein.
+          headers: 
+            Set-Cookie:
+              schema: 
+                type: string
+                example: connect.sid=abcde12345; Path=/; HttpOnly
           schema:
             $ref: "#/definitions/ApiSuccessResponseSimple"
 #          headers:
@@ -966,7 +985,7 @@ paths:
           schema:
             $ref: "#/definitions/ApiErrorResponse"
   /accounts/logout:
-    post:
+    delete:
       tags:
       - "accounts"
       summary: "Loggt den eingeloggten Benutzer aus."

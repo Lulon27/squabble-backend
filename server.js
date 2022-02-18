@@ -9,8 +9,16 @@ const passport = require('passport');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./api/swagger.yml');
+const session = require('express-session');
+const users = require('./users');
 
 const app = express();
+
+//Configure passport
+const configPassport = require('./config/passport-config');
+configPassport.configPassport(passport,
+    email => users.find(user => user.email === email),
+    id => users.find(user => user.id === id));
 
 //Configure express
 app.set('view engine', 'ejs');
@@ -19,7 +27,13 @@ app.set('views', './views');
 app.use(express.static('./public'));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
+app.use(session({
+    secret: 'dwadw',
+    resave: false,
+    saveUninitialized: false
+}));
 app.use(passport.initialize());
+app.use(passport.session());
 
 //Add routers
 app.use('/accounts',                                require('./routes/accounts'));
