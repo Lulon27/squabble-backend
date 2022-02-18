@@ -10,12 +10,7 @@ function configPassport(passport, getUserByEmail, getUserById)
         console.log(user);
         if(user == null)
         {
-            return done(null, false,
-            {
-                code: "ERR_ACC_NOT_FOUND",
-                devMsg: `Account '${email}' wurde nicht gefunden oder das Passwort ist falsch.`,
-                content: null
-            });
+            return done(null, false);
         }
 
         try
@@ -26,12 +21,7 @@ function configPassport(passport, getUserByEmail, getUserById)
             }
             else
             {
-                return done(null, false,
-                {
-                    code: "ERR_ACC_NOT_FOUND",
-                    devMsg: `Account '${email}' wurde nicht gefunden oder das Passwort ist falsch.`,
-                    content: null
-                });
+                return done(null, false);
             }
         }
         catch(e)

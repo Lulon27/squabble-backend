@@ -44,15 +44,25 @@ router.post('/', async (req, res) =>
     }
 })
 
-router.post('/login', passport.authenticate('local'), async (req, res) =>
+router.post('/login', passport.authenticate('local', { failWithError: true }),
+function(req, res, next)
 {
-    res.status(200).json(
+    return res.send(
     {
         code: "SUCCESS",
         devMsg: "",
         content: null
-    });
-})
+    }
+)},
+function(err, req, res, next)
+{
+    return res.status(401).send(
+    {
+        code: "ERR_ACC_NOT_FOUND",
+        devMsg: `Account '${req.body.username}' wurde nicht gefunden oder das Passwort ist falsch.`,
+        content: null
+    }
+)})
 
 router.delete('/logout', auth, async (req, res) =>
 {
