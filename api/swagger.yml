@@ -9,7 +9,7 @@ info:
 #  license:
 #    name: "Apache 2.0"
 #    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "squabble.hopto.org"
+host: "localhost"
 basePath: "/"
 tags:
 - name: "accounts"
@@ -26,12 +26,11 @@ tags:
   description: "Der Itemshop für das PokeTier."
 schemes:
 - "http"
-components:
-  securitySchemes:
-    expressSessionAuth:
-      type: apiKey
-      in: cookie
-      name: session.sid
+securityDefinitions:
+  expressSessionAuth:
+    type: "apiKey"
+    in: "header"
+    name: "session.sid"
 security:
   - expressSessionAuth: []
 paths:
@@ -964,11 +963,11 @@ paths:
           description: > 
             Der Benutzer wurde erfolgreich eingeloggt.
             Die Session-ID wird in einem Cookie namens "connect.sid" zurückgegeben. Dieser Cookie muss in allen weiteren Anfragen des Clients enthalten sein.
-          headers: 
+          headers:
             Set-Cookie:
-              schema: 
-                type: string
-                example: connect.sid=abcde12345; Path=/; HttpOnly
+              type: "string"
+              format: "string"
+              description: "Cookie, der die Session-ID enthält."
           schema:
             $ref: "#/definitions/ApiSuccessResponseSimple"
 #          headers:
