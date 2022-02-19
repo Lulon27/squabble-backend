@@ -11,6 +11,7 @@ const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./api/swagger.yml');
 const session = require('express-session');
 const users = require('./users');
+const morgan = require('morgan');
 
 const app = express();
 
@@ -19,6 +20,9 @@ const configPassport = require('./config/passport-config');
 configPassport.configPassport(passport,
     email => users.find(user => user.email === email),
     id => users.find(user => user.id === id));
+
+//Logging
+app.use(morgan('short'));
 
 //Configure express
 app.set('view engine', 'ejs');
