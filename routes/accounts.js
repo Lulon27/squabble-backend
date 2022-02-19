@@ -9,6 +9,9 @@ const util = require('../response_util');
 const squabble = util.squabble;
 const squabbleAuth = util.squabbleAuth;
 
+const validation = require('../validation');
+const { validationResult } = require('express-validator');
+
 function newUser(id, name, pass)
 {
     const user = {
@@ -22,25 +25,24 @@ function newUser(id, name, pass)
 
 var i = 0;
 
-router.post('/', squabble, async (req, res) =>
+router.post('/', squabble, validation.schema.create_account, async (req, res) =>
 {
-    try
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
     {
-        //Very simple user creation for example purposes
-        //Will be replaced with appropriate user creation
-        console.log(newUser);
-        var pass = await bcryptjs.hash(req.body.password, 10);
-        const user = newUser(i, req.body.username, pass);
-        i += 1;
-        res.sendSquabbleResponse(util.responses.created, '', null);
-        console.log('Registered user: ');
-        console.log(user);
+        return res.sendSquabbleResponse(util.responses.validation_fail, '', null, errors);
     }
-    catch(e)
-    {
-        console.log(e);
-        res.sendStatus(500);
-    }
+    console.log('Client tried to register account with validated body:');
+    console.log(req.body);
+
+    //Very simple user creation for example purposes
+    //Will be replaced with appropriate user creation
+    var pass = await bcryptjs.hash(req.body.password, 10);
+    const user = newUser(i, req.body.username, pass);
+    i += 1;
+    res.sendSquabbleResponse(util.responses.created);
+    console.log('Registered user: ');
+    console.log(user);
 })
 
 router.post('/login', squabble, passport.authenticate('local', { failWithError: true }),
