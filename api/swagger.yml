@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   description: "Squabble API"
-  version: "0.0.1"
+  version: "0.0.2"
   title: "Squabble"
 #  termsOfService: ""
 #  contact:
@@ -9,7 +9,7 @@ info:
 #  license:
 #    name: "Apache 2.0"
 #    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "localhost"
+host: "squabble.hopto.org"
 basePath: "/"
 tags:
 - name: "accounts"
@@ -1133,12 +1133,32 @@ definitions:
     properties:
       code:
         type: "string"
-        example: "ERR_ACC_NOT_FOUND"
+        example: "ERR_VALIDATION"
         description: "Ein Fehlercode, der bei der Programmierung des Clients helfen kann."
       devMsg:
         type: "string"
-        example: "Account 'EpicRobloxMaster' wurde nicht gefunden."
+        example: "Validation der Eingabe fehlgeschlagen."
         description: "Eine Nachricht, die Entwicklern helfen soll, den Fehler besser zu verstehen, aber nicht weiterverarbeitet werden soll."
+      errors:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            msg:
+              type: "string"
+              description: "Name des Fehlers. Dieser kann ein String sein, der an sich keinen Sinn ergibt, aber übersetzt werden kann. Z. B. \"validation.username.length\"."
+              example: "validation.username.length"
+            params:
+              type: "array"
+              description: "Eine optionale Liste von Parametern, die den Fehler besser beschreiben können. Diese Liste ist als Map zu verstehen, in der die Namen der Felder die Namen der Parameter sind und die Werte der Felder die Werte der entsprechenden Parameter."
+              items:
+                type: "object"
+                properties:
+                  parametername:
+                    type: "string"
+                    description: "Das (als Beispiel)\"parametername\"-Feld wird den namen des Parameters haben, und als Wert den Wert des Parameters."
+              example: {"min": 4, "max": 16}
+        description: "Eine Liste von Fehlern, die bei der Programmierung helfen können, die Fehlermeldungen detaillierter zu gestalten."
       content:
         type: "object"
         example: null
