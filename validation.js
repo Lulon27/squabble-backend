@@ -26,7 +26,7 @@ schema.create_account = checkSchema(
     {
         in: ['body'],
         exists: existsCustom('validation.pet_name.missing'),
-        isLength: isLengthCustom(0, 8, 'validation.pet_name.length'),
+        isLength: isLengthCustom(3, 16, 'validation.pet_name.length'),
         trim: true
     },
     petKind:
