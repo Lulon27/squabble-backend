@@ -14,6 +14,7 @@ const users = require('./users');
 const morgan = require('morgan');
 
 const app = express();
+app.enable('trust proxy');
 
 //Configure passport
 const configPassport = require('./config/passport-config');
