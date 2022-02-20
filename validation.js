@@ -6,40 +6,45 @@ schema.create_account = checkSchema(
     email:
     {
         in: ['body'],
+        exists: existsCustom('validation.email.missing'),
         isEmail: true
     },
     username:
     {
         in: ['body'],
+        exists: existsCustom('validation.username.missing'),
         isLength: isLengthCustom(4, 24, 'validation.username.length'),
         trim: true
     },
     password:
     {
         in: ['body'],
+        exists: existsCustom('validation.password.missing'),
         isLength: isLengthCustom(6, 32, 'validation.password.length'),
     },
     petName:
     {
         in: ['body'],
+        exists: existsCustom('validation.pet_name.missing'),
         isLength: isLengthCustom(0, 8, 'validation.pet_name.length'),
         trim: true
     },
     petKind:
     {
         in: ['body'],
+        exists: existsCustom('validation.pet_kind.missing'),
         isIn:
         {
             options: [['KANGAROO']],
-            errorMessage: {msg: 'Invalid pet kind'},
+            errorMessage: {msg: 'validation.pet_kind.invalid'},
         },
         trim: true
     },
     pictureId:
     {
         in: ['body'],
-        errorMessage: {msg: 'validation.picture_id.invalid'},
-        isInt: true,
+        exists: existsCustom('validation.picture_id.missing'),
+        isInt: {errorMessage: {msg: 'validation.picture_id.invalid'}},
         toInt: true
     },
     petImage:
@@ -50,8 +55,7 @@ schema.create_account = checkSchema(
             nullable: true
         },
         trim: true,
-        isBase64: true,
-        errorMessage: {msg: 'validation.pet_image.invalid'},
+        isBase64: {errorMessage: {msg: 'validation.pet_image.invalid'}}
     }
 });
 
@@ -68,6 +72,13 @@ function isLengthCustom(min, max, errMsg)
             }
         },
         options: { 'min': min, 'max': max }
+    };
+}
+function existsCustom(errMsg)
+{
+    return {
+        errorMessage: {msg: errMsg},
+        bail: true
     };
 }
 
