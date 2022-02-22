@@ -1,4 +1,7 @@
 const { checkSchema } = require('express-validator');
+const database = require('./database');
+
+const petKindNames = database.getPetKindNames();
 
 const schema = {};
 schema.create_account = checkSchema(
@@ -33,12 +36,7 @@ schema.create_account = checkSchema(
     {
         in: ['body'],
         exists: existsCustom('validation.pet_kind.missing'),
-        isIn:
-        {
-            options: [['KANGAROO']],
-            errorMessage: {msg: 'validation.pet_kind.invalid'},
-        },
-        trim: true
+        custom: customIsIn(database.getPetKindNames, 'validation.pet_kind.invalid')
     },
     pictureId:
     {
@@ -74,11 +72,26 @@ function isLengthCustom(min, max, errMsg)
         options: { 'min': min, 'max': max }
     };
 }
+
 function existsCustom(errMsg)
 {
     return {
         errorMessage: {msg: errMsg},
         bail: true
+    };
+}
+
+function customIsIn(func, errMsg)
+{
+    return {
+        options: async (value) =>
+        {
+            const values = await func();
+            if (!(values && values.includes(value)))
+            {
+                return Promise.reject({ msg: errMsg });
+            }
+        }
     };
 }
 

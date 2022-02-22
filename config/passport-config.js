@@ -1,23 +1,26 @@
 const LocalStrategy = require('passport-local');
 const bcryptjs = require('bcryptjs');
+const database = require('../database');
 
-function configPassport(passport, getUserByEmail, getUserById)
+function configPassport(passport)
 {
-    const authenticateUser = async (email, password, done) =>
+    const authenticateUser = async (username, password, done) =>
     {
-        const user = getUserByEmail(email);
+        const account = await database.getAccountAuthData(username);
+
         console.log('Authenticating user');
-        console.log(user);
-        if(user == null)
+        console.log(account);
+
+        if(account == null)
         {
             return done(null, false);
         }
 
         try
         {
-            if(await bcryptjs.compare(password, user.password))
+            if(await bcryptjs.compare(password, account.password))
             {
-                return done(null, user)
+                return done(null, account)
             }
             else
             {
@@ -30,9 +33,10 @@ function configPassport(passport, getUserByEmail, getUserById)
         }
     }
     passport.use(new LocalStrategy({}, authenticateUser));
-    passport.serializeUser((user, done) => done(null, user.id));
-    passport.deserializeUser((id, done) => {
-        return done(null, getUserById(id));
+    passport.serializeUser((account, done) => done(null, account.acc_id));
+    passport.deserializeUser(async (acc_id, done) =>
+    {
+        return done(null, await database.getAccountByID(acc_id));
     });
 }
 

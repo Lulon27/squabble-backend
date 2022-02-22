@@ -75,6 +75,7 @@ paths:
       tags:
       - "accounts"
       summary: "Gibt Informationen zu einem Account zurück."
+      description: "Gibt Informationen zu einem Account zurück, die zum Beispiel auf der Startseite angezeigt werden können. Diese Informationen können auch von anderen Nutzern, mit denen man befreundet ist, angezeigt werden, wenn man z. B. deren Profil besucht. Wird dieser Pfad mit dem eigenen Benutzernamen aufgerufen können alle Informationen eingesehen werden. Wird der Pfad mit dem Benutzernamen eines Freundes aufgerufen, werden eingeschränkte Informationen zurückgegeben. Momentan ist es nur möglich, Informationen über den eigenen Account abzurufen."
       consumes:
       - "application/json"
       produces:
@@ -1025,6 +1026,12 @@ definitions:
       petId:
         type: "integer"
         description: "ID des PokePet"
+      petName:
+        type: "string"
+        description: "Name des PokePet"
+      petImage:
+        type: "string"
+        description: "URL des PokePet-Bildes"
   RegisterAccountData:
     type: "object"
     required:
@@ -1183,7 +1190,7 @@ definitions:
     properties:
       username:
         type: "string"
-        example: "EpicRoblexMaster"
+        example: "EpicRobloxMaster"
       petName:
         type: "string"
         example: "Sparky 2.0"
