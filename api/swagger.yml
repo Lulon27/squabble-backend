@@ -1062,7 +1062,7 @@ definitions:
         description: "Name des PokeTier"
       petKind:
         type: "string"
-        example: "KANGAROO"
+        example: "FOX"
         description: "Art des Poketier"
       petImage:
         type: "string"
@@ -1214,8 +1214,8 @@ definitions:
         example: 32
       petImage:
         type: "string"
-        example: "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAA0AEYDASIAAhEBAxEB/8QAGgAAAgMBAQAAAAAAAAAAAAAAAAQDBQYBAv/EAC0QAAEDAwMCBQMFAQAAAAAAAAEAAgMEESEFEjETQQYUIlFhMnGRI4GhscHR/8QAFwEAAwEAAAAAAAAAAAAAAAAAAAECA//EABkRAQEBAQEBAAAAAAAAAAAAAAABETECEv/aAAwDAQACEQMRAD8AT12TdVW9gqcp/VX76uT4wkVHrrSPBQulccCGhxBseDbBSNzcrOfSyzTDIbiYDcc/wodFgE+oxl7SY4zud7fCv3vNS50TGE7j3wLI4XWJIQrqr8O1cDdzbPb7DlcodFL5L1ILWt5bwSr2I+apgCeEJvUKXylSY+WHLfshMGKyTfUSO93FQXTQoJZHXc4NB7lejpp4a+5+As9jTKNLphU1DeoAY72ye60DqJsMXQeyN9M44BGAldHpDSxSNqItwc7FwraH1EMiLy3u1+R+VN628ZI8aVQ08NM8BtmAnnuPlIV2+nmM8FQGxBvqYWbvwndSqxTERbrF3+JTfEaZwPqLhk8q5GFqSPxAZHCN9K120BxAdY2TM80NZFup2kOHIIsR8EKgZGGSnptsTguAz8K/8O0klJSydc36hG25+/8A1OxMrJa/v88N7C1oaA2/dCtfFksBmjhDbyNySOwQnCqelpuu67+FbQU0UQAA572XiKBrOLj90w1pHOVEmLvrRIQ1nO0fZRMd+phyY+rGFxkZvnITpSqXW6Gaoe2dgJDebdlDTUfVp2mMESD6hdaFzbNe12WPGfhVNVSCkjkm8x02NFxblEBKaJ9C9skwsx3seMo1LXNsTYKR/rH1PA4VDVVktS473OIv3N1E1Um1MXl5LnG7jkk90LgtblCZN3fBK9E4BQhSpLGAeylshCQRycFZ7xC4iheL4uP7QhEFZReghCtKRCEID//Z"
-        description: "Optionales, in Base64 codiertes, Bild des PokeTier. Max. ca. 4 KB."
+        example: ""
+        description: "URL des PokePet-Bildes."
       stats:
         type: "object"
         properties:
