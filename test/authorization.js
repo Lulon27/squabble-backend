@@ -1,4 +1,4 @@
-const request = require('supertest')('http://localhost');
+const request = require('supertest')(process.env.TEST_SERVER_HOST);
 const expect = require('chai').expect;
 
 testEndpoint('PATCH', '/accounts/42');

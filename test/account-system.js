@@ -1,4 +1,4 @@
-const request = require('supertest')('http://localhost:3001');
+const request = require('supertest')(process.env.TEST_SERVER_HOST);
 const expect = require('chai').expect;
 const database = require('../database');
 
