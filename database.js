@@ -128,6 +128,34 @@ async function getAccountByID(acc_id)
     return null;
 }
 
+
+
+async function searchAccounts(filter)
+{
+    filter = filter
+    .replaceAll('!', '!!')
+    .replaceAll('%', '!%')
+    .replaceAll('_', '!_')
+    .replaceAll('[', '![');
+    let result = await doQuery(
+    `SELECT
+    account.username,
+    account.picture_id AS pictureId,
+    pokepets.pet_name as petName,
+    pokepets.pet_kind as petKind,
+    pokepets.pet_level as petLvl
+    FROM account
+    JOIN pokepets ON account.pet_id = pokepets.pet_id
+    WHERE account.username LIKE ?
+    LIMIT 10;`, [`%${filter}%`]);
+
+    if(result)
+    {
+        return result;
+    }
+    return null;
+}
+
 module.exports.getPool = getPool;
 module.exports.doQuery = doQuery;
 
@@ -138,3 +166,4 @@ module.exports.isUsernameTaken = isUsernameTaken;
 module.exports.isEmailTaken = isEmailTaken;
 module.exports.getAccountAuthData = getAccountAuthData;
 module.exports.getAccountByID = getAccountByID;
+module.exports.searchAccounts = searchAccounts;

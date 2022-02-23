@@ -563,11 +563,13 @@ paths:
                 example:
                   -
                       username: "EpicRobloxMaster"
+                      pictureId: 5
                       petName: "Sparky 2.0"
                       petKind: "KANGAROO"
                       petLvl: 69
                   -
                       username: "xXrobloxleonHDXx"
+                      pictureId: 2
                       petName: "birb"
                       petKind: "BIRD"
                       petLvl: 57
@@ -1204,6 +1206,9 @@ definitions:
       username:
         type: "string"
         example: "EpicRobloxMaster"
+      pictureId:
+        type: "integer"
+        example: 5
       petName:
         type: "string"
         example: "Sparky 2.0"
