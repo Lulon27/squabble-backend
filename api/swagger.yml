@@ -1023,12 +1023,25 @@ definitions:
       pictureId:
         type: "integer"
         description: "ID des ausgewählten Profilicons"
+      money:
+        type: "integer"
+        description: "Anzahl der Münzen"
+        example: 1337
       petId:
         type: "integer"
         description: "ID des PokePet"
       petName:
         type: "string"
         description: "Name des PokePet"
+        example: "Sparky"
+      petKind:
+        type: "string"
+        description: "Art PokePet"
+        example: "FOX"
+      petLvl:
+        type: "integer"
+        description: "PokePet-Level"
+        example: 30
       petImage:
         type: "string"
         description: "URL des PokePet-Bildes"

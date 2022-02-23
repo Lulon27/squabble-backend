@@ -40,9 +40,11 @@ async function getAccount(account_name)
     account.email,
     account.username,
     account.picture_id AS pictureId,
-    account.pet_id AS petId,
     account.money,
+    account.pet_id AS petId,
     pokepets.pet_name as petName,
+    pokepets.pet_kind as petKind,
+    pokepets.pet_level as petLvl,
     pokepets.pet_image as petImage
     FROM account
     JOIN pokepets ON account.pet_id = pokepets.pet_id 
