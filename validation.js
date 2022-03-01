@@ -42,7 +42,7 @@ schema.create_account = checkSchema(
     {
         in: ['body'],
         exists: existsCustom('validation.picture_id.missing'),
-        isInt: {errorMessage: {msg: 'validation.picture_id.invalid'}},
+        isInt: isIntCustom(0, 9, 'validation.picture_id.invalid'),
         toInt: true
     },
     petImage:
@@ -93,8 +93,8 @@ schema.update_account = checkSchema(
     pictureId:
     {
         in: ['body'],
-        isInt: {errorMessage: {msg: 'validation.picture_id.invalid'}},
         optional: true,
+        isInt: isIntCustom(0, 9, 'validation.picture_id.invalid'),
         toInt: true
     },
     petImage:
@@ -144,6 +144,22 @@ function customIsIn(func, errMsg)
                 return Promise.reject({ msg: errMsg });
             }
         }
+    };
+}
+
+function isIntCustom(min, max, errMsg)
+{
+    return {
+        errorMessage:
+        {
+            msg: errMsg,
+            params:
+            {
+                'min': min,
+                'max': max
+            }
+        },
+        options: { 'min': min, 'max': max }
     };
 }
 

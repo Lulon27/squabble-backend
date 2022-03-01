@@ -38,7 +38,7 @@ router.post('/', squabble, validation.schema.create_account, async (req, res) =>
     }
 
     let pass = await bcryptjs.hash(req.body.password, 10);
-    let success = await database.registerAccount(req.body.email, req.body.username, pass, req.body.petName, req.body.petKind, null);
+    let success = await database.registerAccount(req.body.email, req.body.username, pass, req.body.pictureId, req.body.petName, req.body.petKind, null);
 
     if(success)
     {

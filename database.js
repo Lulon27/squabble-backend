@@ -57,10 +57,10 @@ async function getAccount(account_name)
     return null;
 }
 
-async function registerAccount(email, username, password, petName, petKind, petImagePath)
+async function registerAccount(email, username, password, pictureId, petName, petKind, petImagePath)
 {
-    let result = await doQuery('CALL RegisterAccount(?, ?, ?, ?, ?, ?);',
-    [email, username, password, petName, petKind, petImagePath]);
+    let result = await doQuery('CALL RegisterAccount(?, ?, ?, ?, ?, ?, ?);',
+    [email, username, password, pictureId, petName, petKind, petImagePath]);
     if(result.affectedRows == 2)
     {
         return true;
