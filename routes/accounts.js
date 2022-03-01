@@ -104,9 +104,51 @@ router.get('/:accountName', squabbleAuth, async (req, res) =>
     }
 });
 
-router.patch('/:accountName', squabbleAuth, async (req, res) =>
+router.patch('/:accountName', squabbleAuth, validation.schema.update_account, async (req, res) =>
 {
-    res.sendSquabbleResponse(util.responses.not_implemented, '', null);
+    if(req.user.username !== req.params.accountName)
+    {
+        res.sendSquabbleResponse(util.responses.unauthorized, '', null);
+        return;
+    }
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+    {
+        return res.sendSquabbleResponse(util.responses.validation_fail, '', null, errors);
+    }
+
+    try
+    {
+        if(req.body.email && await database.isEmailTaken(req.body.email))
+        {
+            res.sendSquabbleResponse(util.responses.email_taken);
+            return;
+        }
+        else if(req.body.username && await database.isUsernameTaken(req.body.username))
+        {
+            res.sendSquabbleResponse(util.responses.username_taken);
+            return;
+        }
+
+        try
+        {
+            console.log(req.user.username);
+            await database.updateAccount(req.user.username, req.body);
+        }
+        catch(err)
+        {
+            console.log(err);
+            res.sendSquabbleResponse(util.responses.internal_server_error);
+            return;
+        }
+        res.sendSquabbleResponse(util.responses.success);
+    }
+    catch(err)
+    {
+        console.log(err);
+        res.sendSquabbleResponse(util.responses.internal_server_error);
+    }
 });
 
 router.delete('/:accountName', squabbleAuth, async (req, res) =>

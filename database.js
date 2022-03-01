@@ -87,7 +87,6 @@ async function getPetKindNames()
 async function isUsernameTaken(username)
 {
     let result = await doQuery('SELECT EXISTS(SELECT * FROM account WHERE username = ?);', [username]);
-
     if(result && result[0])
     {
         return Object.values(result[0])[0] === 1;
@@ -156,6 +155,89 @@ async function searchAccounts(filter)
     return null;
 }
 
+async function getAccountPetID(username)
+{
+    let result = await doQuery('SELECT pet_id FROM account WHERE username = ?;', [username]);
+    if(result && result[0])
+    {
+        return result[0].pet_id;
+    }
+    return null;
+}
+
+async function updateRow(table, where, values)
+{
+    let query = `UPDATE ${table} SET `;
+    let sqlValues = [];
+    const valKeys = Object.keys(values);
+    for (let i = 0; i < valKeys.length; i++)
+    {
+        query += `${valKeys[i]}=?`;
+        if(i < valKeys.length - 1)
+        {
+            query += ',';
+        }
+        sqlValues.push(values[valKeys[i]]);
+    }
+
+    query += ` WHERE ${where.column}=?;`;
+    sqlValues.push(where.value);
+
+    await doQuery(query, sqlValues);
+}
+
+async function updateAccount(account_name, body)
+{
+    const accountProps =
+    [
+        {bodyName: 'email'},
+        {bodyName: 'username'},
+        {bodyName: 'password'},
+        {bodyName: 'pictureId', dbName: 'picture_id'}
+    ];
+    const petProps =
+    [
+        {bodyName: 'petName', dbName: 'pet_name'},
+        {bodyName: 'petKind', dbName: 'pet_kind'}
+    ];
+
+    let accountValues = {};
+    let petValues = {};
+
+    for(let [key, value] of Object.entries(body))
+    {
+        let foundAccProp = false;
+        for (const e of accountProps)
+        {
+            if(e.bodyName === key)
+            {
+                accountValues[e.dbName || e.bodyName] = value;
+                foundAccProp = true;
+                break;
+            }
+        }
+
+        if(!foundAccProp)
+        {
+            for (const e of petProps)
+            {
+                if(e.bodyName === key)
+                {
+                    petValues[e.dbName || e.bodyName] = value;
+                    break;
+                }
+            }
+        }
+    }
+    
+    if(Object.keys(petValues).length !== 0)
+    {
+        const petId = await getAccountPetID(account_name);
+        await updateRow('pokepets', {column: 'pet_id', value: petId}, petValues);
+    }
+    await updateRow('account', {column: 'username', value: account_name}, accountValues);
+}
+
 module.exports.getPool = getPool;
 module.exports.doQuery = doQuery;
 
@@ -167,3 +249,4 @@ module.exports.isEmailTaken = isEmailTaken;
 module.exports.getAccountAuthData = getAccountAuthData;
 module.exports.getAccountByID = getAccountByID;
 module.exports.searchAccounts = searchAccounts;
+module.exports.updateAccount = updateAccount;
